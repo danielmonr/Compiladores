@@ -1,3 +1,17 @@
+/* 
+ *
+ *
+ * Tarea 2 - Diseño de Compiladores 
+ *
+ * Daniel Monzalvo A01021514
+ *
+ * instrucciones: para compilar usar el comando make, para correr utilizar ./parser 'cadena a revisar(sin espacios y entre comillas simples)'
+ *
+ **/
+
+
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
