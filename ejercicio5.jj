@@ -1,0 +1,48 @@
+PARSER_BEGIN(ejercicio5)
+
+public class ejercicio5 {
+
+  public static void main(String args[]) throws ParseException {
+    try {
+      ejercicio5 parser = new ejercicio5 (new java.io.FileInputStream(args[0]));
+      parser.Input();
+    }
+    catch(java.io.FileNotFoundException e)
+    {
+      System.out.println("El archivo no esta...");
+    }
+  }
+
+}
+
+PARSER_END(ejercicio5)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+	<Program: "program">
+	| <Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+	| <Entero: (["0"-"9"])+ >
+	| <Real: (["0"-"9"])* ["*"] (["0"-"9"]+) >
+	| <Int: "int">
+	| <Float: "float">
+	| <If: "if">
+	| <Else: "else">
+	| <Then: "then">
+	| <Operador: ["+","-","="]>
+	| <Terminal: ["{","}"]>
+}
+
+void Input() :
+{ System.out.println("AAA"); }
+{
+  ( <Id> | <Entero> | <If> | <Else> | <Then> | <Program> | <Int> | <Float> | <Operador> | <Terminal> | <Real>)+
+  <EOF>
+}
