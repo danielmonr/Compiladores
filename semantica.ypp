@@ -1,0 +1,56 @@
+%{
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  int val; 
+};
+%token <val> NUM MAS STOP POR PA PC
+%type  <val> e t f 
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+l: e STOP  { cout << "l->e;" << endl; 
+				cout << "Resultado = " << $1 << endl;
+				exit(0); }
+
+e: e MAS t  { cout << "e->e+t" << endl; 
+				$$ = $1 + $3;}
+ | t  { cout << "e->t" << endl; 
+ 			$$ = $1;}
+
+t: t POR f    { cout << "t->t*f" << endl; 
+					$$ = $1 * $3;}
+ | f  { cout << "t->f" << endl; 
+ 			$$ = $1;}
+
+f: PA e PC    { 
+				cout << "f->(e)" << endl; 
+				$$ = $2;
+			   }
+
+ | NUM  { cout << "f->ID" << endl; 
+ 			$$ = $1;
+ 			cout << "Valor " << $1 << endl;}
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main( int argc, char **argv )
+{
+    ++argv, --argc;     /* skip over program name */
+    if ( argc > 0 )
+       yyin = fopen( argv[0], "r" );
+    else
+       yyin = stdin;
+ 
+  yyparse();
+  return 0;
+}

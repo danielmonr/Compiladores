@@ -1,0 +1,48 @@
+%{
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  int val; 
+  char sym;
+};
+%token <val> ID
+%token <sym> MAS IGUAL LA LC POR
+%type  <val> E T F
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+E: E MAS T  { cout << "Primera regla" << endl; }
+
+E: T  { cout << "Segunda regla" << endl; }
+
+T: T POR F  { cout << "Tercera regla" << endl; }
+
+T: F  { cout << "Cuarta regla" << endl; }
+
+F: ID  { cout << "Quinta regla" << endl; }
+
+F: LA E LC  { cout << "Sexta regla" << endl; }
+
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main( int argc, char **argv )
+{
+    ++argv, --argc;     /* skip over program name */
+    if ( argc > 0 )
+       yyin = fopen( argv[0], "r" );
+    else
+       yyin = stdin;
+ 
+  yyparse();
+  return 0;
+}

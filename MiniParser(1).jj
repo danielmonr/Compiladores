@@ -1,0 +1,68 @@
+PARSER_BEGIN(MiniParser)
+
+public class MiniParser {
+
+  public static void main(String args[]) throws ParseException {
+    try {
+      MiniParser parser = new MiniParser(new java.io.FileInputStream(args[0]));
+      parser.Program();
+    }
+    catch(java.io.FileNotFoundException e)
+    {
+      System.out.println("El archivo no esta...");
+    }
+  }
+
+}
+
+PARSER_END(MiniParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+   < IF: "if" >
+|  < THEN: "then" >
+|  < ELSE: "else" >
+|  < INT: "int" >
+|  < FLOAT: "float" >
+|  < PROG: "program" >
+}
+
+TOKEN :
+{
+   < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > 
+ | < ENTERO: ["0"-"9"] (["0"-"9"])* > 
+ | < REAL: ["0"-"9"] (["0"-"9"])*"."["0"-"9"](["0"-"9"])* > 
+ | < MAS: "+" > 
+ | < IGUAL: "=" > 
+ | < LA: "{" > 
+ | < LC: "}" > 
+ | < MEQ: "<" > 
+ | < MAQ: ">" > 
+ | < PC: ";" > 
+}
+
+
+void Program() :
+{ System.out.println("Iniciando revision del programa"); }
+{
+  <PROG><ID><LA>
+  ( Declara() )+
+  Cuerpo() 
+  <LC> 
+  <EOF>
+}
+
+void Declara() :
+{ System.out.println("Una declaracion"); }
+{
+  ( <INT> | <FLOAT> )
+  <ID><PC> 
+}

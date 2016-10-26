@@ -1,0 +1,61 @@
+%{
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  int val; 
+  char sym;
+};
+%token <val> PROG IF THEN ELSE INT FLOAT ID ENTERO REAL
+%token <sym> MAS IGUAL LA LC MEQ MAQ PC
+%type  <val> program declara unaDeclara tipo cuerpo estru suma estru_if compara sim
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+program: PROG ID LA declara cuerpo LC  { cout << "Un programa revisado" << endl; }
+
+declara: unaDeclara         { cout << "Una Declaracion" << endl; }
+       | unaDeclara declara  { cout << "Una declaracion y mas" << endl; }
+
+unaDeclara: tipo ID PC {cout<<"Declara int\n";}
+
+tipo: INT {cout<< "entero\n"; }
+      | FLOAT {cout << "FLOAT\n"; }
+
+cuerpo: estru cuerpo {cout << "Cuerpo\n"; }
+
+estru: estru_if {cout << "estructura if\n";}
+        | suma  {cout << "Estructura suma\n";}
+
+suma: ID IGUAL MAS REAL PC  { cout << "suma\n";}
+
+estru_if: IF compara THEN estru ELSE estru { cout << "if else\n";}
+          | IF compara THEN estru {cout << "if.\n";}
+
+compara: ID sim ENTERO {cout << "compara\n";}
+
+sim: MEQ {cout << "Menor que.\n";}
+      | MAQ {cout << "Mayor que.\n";}
+
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main( int argc, char **argv )
+{
+    ++argv, --argc;     /* skip over program name */
+    if ( argc > 0 )
+       yyin = fopen( argv[0], "r" );
+    else
+       yyin = stdin;
+ 
+  yyparse();
+  return 0;
+}

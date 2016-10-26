@@ -1,0 +1,54 @@
+PARSER_BEGIN(MiniParser)
+
+public class MiniParser {
+
+  public static void main(String args[]) throws ParseException {
+    try {
+      MiniParser parser = new MiniParser(new java.io.FileInputStream(args[0]));
+      parser.Program();
+    }
+    catch(java.io.FileNotFoundException e)
+    {
+      System.out.println("El archivo no esta...");
+    }
+  }
+
+}
+
+PARSER_END(MiniParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+   < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > 
+ | < MAS: "+" > 
+ | < POR: "*" >
+ | < LA: "(" > 
+ | < LC: ")" > 
+}
+
+
+void E() :
+{ System.out.println("Iniciando revision del programa"); }
+{
+  (E() <MAS> T() | T() )
+}
+
+void T() :
+{ System.out.println("Una declaracion"); }
+{
+  (T() <POR> F() | F() )
+}
+
+void F() : 
+{System.out.println("Una declaracion");}
+{
+  (<ID> | <LA> E() <LC>)
+}

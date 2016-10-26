@@ -1,0 +1,11 @@
+|#physics_start
+obj hola;
+tiempo t;
+int il;
+for i to 23:
+end;
+if 3 < 0 : 
+imprimir();
+else:
+end;
+#end

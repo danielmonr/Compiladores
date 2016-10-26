@@ -1,0 +1,66 @@
+PARSER_BEGIN(Tarea3)
+
+public class Tarea3 {
+
+  public static void main(String args[]) throws ParseException {
+    try {
+      Tarea3 parser = new Tarea3 (new java.io.FileInputStream(args[0]));
+      parser.Input();
+    }
+    catch(java.io.FileNotFoundException e)
+    {
+      System.out.println("El archivo no esta...");
+    }
+  }
+
+}
+
+PARSER_END(Tarea3)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+   < ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* > 
+ | < MAS: "+" > 
+ | < POR: "*" >
+ | < LA: "(" > 
+ | < LC: ")" > 
+}
+
+
+void E() :
+{ System.out.println("Iniciando revision del programa"); }
+{
+  (T()  E'() | T())
+}
+
+void E'() :
+{System.out.println("Una declaracion");}
+{
+  (<MAS> T() E'() | <MAS> T())
+}
+
+void T() :
+{ System.out.println("Una declaracion"); }
+{
+  (F() T'() | F())
+}
+
+void T'() :
+{ System.out.println("Una declaracion"); }
+{
+  (<POR> F() T'() | <POR> F())
+}
+
+void F() : 
+{System.out.println("Una declaracion");}
+{
+  (<ID> | <LA> E() <LC>)
+}
