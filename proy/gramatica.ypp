@@ -15,6 +15,7 @@ int yyerror(const char *p) { cerr << "Error!" << endl; }
   int val; 
   char sym;
 };
+
 %token <val> ID CADENA ENT
 %token <sym> INI END PC INT IG TMP POS OBJ AC CC MH AP CP CO TIRO PT X Y MAS MENOS POR DIV IFT ELSE DP DONE MIN MAX IMPT TO
 %type  <val> S S1 D_VAR E_COND I_NOR I_POS I_OBJ I_ARR TIPO VAR VAR_NOR VAR_ARR FUNC MOV_HOR T_PAR ASI ASI_POS ASI_OBJ ASI_ARR V_VAR OP CIR CIR2 IF COND VAL CIR_LOG FOR IMP IMP2
