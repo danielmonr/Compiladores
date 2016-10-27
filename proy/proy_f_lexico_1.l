@@ -15,23 +15,23 @@ ID [a-z][a-z0-9]*
 pos		{ cout <<  "POS\n"; }
 tiempo	{ cout <<  "TMP\n"; }
 obj		{ cout <<  "OBJ\n"; }
-if       { cout <<  "IF\n"; }
+if       { cout <<  "IFT\n"; }
 else     { cout <<  "ELSE\n"; }
 ":"		 { cout <<  "DP\n"; }
 done	 { cout <<  "DONE\n"; }
-for		 { cout <<  "FOR\n"; }
 to 		 { cout <<  "TO\n"; }
 int      { cout <<  "INT\n"; }
 {ID}                  { cout <<  "ID\n"; }
 {DIGIT}+              { cout <<  "ENTERO\n"; }
 "+"     { cout <<  "MAS\n"; }
 "="     { cout <<  "IGUAL\n"; }
-"("      { cout <<  "PA\n"; }
-")"      { cout <<  "PC\n"; }
+"("      { cout <<  "AP\n"; }
+")"      { cout <<  "CP\n"; }
 "<"      { cout <<  "MEQ\n"; }
 ">"      { cout <<  "MAQ\n"; }
 ";"      { cout <<  "PC\n"; }
 "."		 { cout <<  "PT\n"; }
+","		 { cout <<  "CO\n"; }
 
 <<EOF>>  { return 0; }
 [ \t\n]+ { }
