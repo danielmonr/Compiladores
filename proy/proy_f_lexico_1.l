@@ -10,8 +10,8 @@ ID [a-z][a-z0-9]*
 
 %%
 
-"|#physics_start"  { cout << "Inicio de programa\n"; }
-"#end" 	{ cout << "Fin del programa\n" ;}
+"|#physics_start"  { return INI; }
+"#end" 	{ return END;}
 pos		{ cout <<  "POS\n"; }
 tiempo	{ cout <<  "TMP\n"; }
 obj		{ cout <<  "OBJ\n"; }
