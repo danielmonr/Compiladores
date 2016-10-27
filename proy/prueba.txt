@@ -1,0 +1,7 @@
+|#physics_start
+	pos inicial = (12, 9);
+	obj o = (inicial, 50, 0, 0);
+	tiempo t = 3;
+	pos final = tiro_parabolico(obj, t);
+	imprimir(“El tiempo final es ” + final);
+#end

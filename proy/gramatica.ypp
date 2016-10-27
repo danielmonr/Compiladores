@@ -17,42 +17,114 @@ int yyerror(const char *p) { cerr << "Error!" << endl; }
 };
 
 %token <val> ID CADENA ENT
-%token <sym> INI END PC INT IG TMP POS OBJ AC CC MH AP CP CO TIRO PT X Y MAS MENOS POR DIV IFT ELSE DP DONE MIN MAX IMPT TO
+%token <sym> FORT INI END PC INT IG TMP POS OBJ AC CC MH AP CP CO TIRO PT X Y MAS MENOS POR DIV IFT ELSE DP DONE MIN MAX IMPT TO
 %type  <val> S S1 D_VAR E_COND I_NOR I_POS I_OBJ I_ARR TIPO VAR VAR_NOR VAR_ARR FUNC MOV_HOR T_PAR ASI ASI_POS ASI_OBJ ASI_ARR V_VAR OP CIR CIR2 IF COND VAL CIR_LOG FOR IMP IMP2
 
 //-- GRAMMAR RULES ---------------------------------------
 %%
 
-S: INI S1 END
-S1: D_VAR S1 | E_COND S1 | OP S1 | IMP S1
-D_VAR: TIPO VAR PC | I_NOR | I_POS | I_OBJ | I_ARR
-I_NOR: INT VAR IG ASI PC | TMP VAR IG ASI PC
-I_POS: POS VAR IG ASI POS PC
-I_OBJ: OBJ VAR IG ASI_OBJ PC
-I_ARR: TIPO VAR IG ASI_ARR PC
-TIPO: INT | POS | OBJ | TMP
-VAR: VAR_NOR | VAR_ARR
-VAR_NOR: ID
-VAR_ARR: ID AC ENT CC
-FUNC: MOV_HOR | T_PAR
-MOV_HOR: MH AP ASI_OBJ CO CP PC
-T_PAR: TIRO AP ASI_OBJ CO ASI CP PC
-ASI: ENT | VAR | AP ASI CP | V_VAR | OP
-ASI_POS: AP ASI CO ASI CP | VAR | FUNC
-ASI_OBJ: AP ASI_POS CO ASI CO ASI CO ASI CP | VAR 
-ASI_ARR: ENT CO ASI_ARR | VAR CO ASI_ARR | ENT | VAR
-V_VAR: ID PT X | ID PT Y
-OP: ASI CIR ASI | ASI CIR2 | ASI CIR OP
-CIR: MAS | MENOS | POR | DIV
-CIR2: MAS MAS | MENOS MENOS
-E_COND: IF | FOR
-IF: IFT COND DP S1 DONE | IFT COND DP S1 ELSE DP S1 DONE 
-COND: VAL CIR_LOG VAL
-VAL: VAR | ENT | V_VAR
-CIR_LOG: MIN | MAX | IG IG | MIN IG | MAX IG
-FOR: ID TO ID DP S1 DONE | ID TO ENT DP S1 DONE
-IMP: IMPT AP IMP2 CP PC
-IMP2: ASI | CADENA | ASI MAS IMP2 | CADENA MAS IMP2
+S: INI S1 END { cout << "S   -> l#physics_start S1  #end\n"; cout << "Gramatica Aceptada"; };
+
+S1: {cout << "S1 -> epsilon\n";} |
+	D_VAR S1 {cout << "S1 -> DECLARACION_VARIABLE S1\n"; } | 
+	E_COND S1 { cout << "S1 -> ESTRUCTURA_CONDICIONAL S1\n"; } |
+	OP S1 { cout << "S1 -> OPERACION S1\n";} |
+	IMP S1 {cout << "S1 -> IMPRIMIR  S1\n";} ;
+
+D_VAR: TIPO VAR PC { cout << "DECLARACION_VARIABLE -> TIPO VAR PC\n"; } |
+	I_NOR { cout << "DECLARACION_VARIABLE -> I_NOR\n"; } |
+	I_POS { cout << "DECLARACION_VARIABLE -> I_POS\n"; } |
+	I_OBJ { cout << "DECLARACION_VARIABLE -> I_OBJ\n"; } |
+ 	I_ARR { cout << "DECLARACION_VARIABLE -> I_ARR\n"; } ;
+
+I_NOR: INT VAR IG ASI PC { cout << "INICIALIZACION_NORMAL -> int VARIABLE = ASIGNACION ;\n";}|
+	TMP VAR IG ASI PC {cout << "INICIALIZACION_POSICION -> tiempo tiempo VARIABLE = ASIGNACION ;\n" ;};
+
+I_POS: POS VAR IG ASI PC { cout << "INICIALIZACION_OBJETO -> pos VARIABLE = ASIGNACION_POSICION ;\n";};
+
+I_OBJ: OBJ VAR IG ASI_OBJ PC { cout << "INICIALIZACION_OBJETO -> OBJ VARIABLE = ASIGNACION_OBJETO ;\n";} ;
+
+I_ARR: TIPO VAR IG ASI_ARR PC { cout << "INICIALIZACION_ARREGLO -> TIPO VARIABLE = ASIGNACION_ARREGLO ;\n";};
+
+TIPO: INT {cout << "TIPO -> int;\n";} |
+	POS {cout << "TIPO -> pos;\n";} | 
+	OBJ {cout << "TIPO -> obj;\n";} |
+	TMP {cout << "TIPO -> tiempo;\n";} ;
+
+VAR: VAR_NOR { cout << "VARIABLE -> VARIABLENORMAL\n"; } | 
+	VAR_ARR { cout << "VARIABLE -> VARIABLEARREGLO\n";} ; 
+
+VAR_NOR: ID { cout << "VARIABLE_NORMAL -> id\n"; };
+
+VAR_ARR: ID AC ENT CC { cout << "VARIABLEARREGLO -> id [  entero  ]\n"; };
+
+FUNC: MOV_HOR {cout << "FUNCIONES -> MOVIMIENTO_HORIZONTAL\n"; } |
+	T_PAR {cout << "FUNCIONES -> TIRO_PARABOLICO\n";};
+
+MOV_HOR: MH AP ASI_OBJ CO CP PC {cout << "MOVIMIENTO_HORIZONTAL -> mover_horizontal( ASIGNACION_OBJETO , ASIGNACION );\n";};
+
+T_PAR: TIRO AP ASI_OBJ CO ASI CP PC {cout << "TIRO_PARABOLICO -> tiro_parabolico( ASIGNACION_OBJETO , ASIGNACION );\n";};
+
+ASI: 	ENT {cout << "ASIGNACION  ->  entero\n";} |
+	VAR {cout << "ASIGNACION  ->  VARIABLE\n";} | 
+	AP ASI CP {cout << "(ASIGNACION)\n";} | 
+	V_VAR {cout << "ASIGNACION  ->  VALORVARIABLE\n";} | 
+	OP {cout << "ASIGNACION  ->  OPERACION\n";};
+
+ASI_POS: AP ASI CO ASI CP {cout << "ASIGNACION_POSICION -> ( ASIGNACION , ASIGNACION )\n";} | 
+	 VAR {cout << "ASIGNACION_POSICION -> VARIABLE\n";} | 
+	 FUNC {cout << "ASIGNACION_POSICION -> FUNCIONES\n";};
+
+ASI_OBJ: AP ASI_POS CO ASI CO ASI CO ASI CP {cout << "ASIGNACION_OBJETO -> ( ASIGNACION_POSICION , ASIGNACION , ASIGNACION , ASIGNACION )\n";} | 
+	 VAR {cout << "ASIGNACION_OBJETO -> VARIABLE\n";} ;
+
+ASI_ARR: ENT CO ASI_ARR {cout << "ASIGNACION_ARREGLO  ->  entero ,  ASIGNACION_ARREGLO\n";} | 
+	 VAR CO ASI_ARR {cout << "ASIGNACION_ARREGLO  ->  VARIABLE ,  ASIGNACION_ARREGLO\n";} | 
+	 ENT {cout << "ASIGNACION_ARREGLO -> entero\n";} | 
+	 VAR {cout << "ASIGNACION_ARREGLO -> VARIABLE\n";};
+
+V_VAR: 	ID PT X {cout << "VALORVARIABLE ->  id  .  x\n";} | 
+	ID PT Y {cout << "VALORVARIABLE ->  id  .  y\n";};
+
+OP: 	ASI CIR ASI {cout << "OPERACION ->  ASIGNACION  OPERADOR  ASIGNACION\n";} | 
+	ASI CIR2 {cout << "OPERACION ->	ASIGNACION  OPERADOR2\n";} | 
+	ASI CIR OP {cout << "ASIGNACION  OPERADOR  OPERACION;\n";};
+
+CIR: 	MAS {cout << "OPERADOR  ->  +\n";} | 
+	MENOS {cout << "OPERADOR  ->  -\n";} | 
+	POR {cout << "OPERADOR  ->  *\n";} | 
+	DIV {cout << "OPERADOR  ->  /\n";};
+	
+CIR2: 	MAS MAS {cout << "OPERADOR2  ->  ++\n";} | 
+	MENOS MENOS {cout << "OPERADOR2  ->  --\n";};
+
+E_COND: IF {cout << "ESTRUCTURA_CONDICIONAL  ->  IF\n";} | 
+	FOR {cout << "ESTRUCTURA_CONDICIONAL  ->  FOR\n";};
+
+IF: 	IFT COND DP S1 DONE {cout << "IF  ->  if CONDICION  :  S1  done\n"; } | 
+	IFT COND DP S1 ELSE DP S1 DONE {cout << "IF -> if CONDICION  :  S1  else  :  S1  done\n";};
+
+COND: VAL CIR_LOG VAL {cout << "CONDICION  ->  VALOR  OPERADOR_LOGICO  VALOR\n";};
+
+VAL: 	VAR {cout << "VALOR ->  VARIABLE\n";} | 
+	ENT {cout << "VALOR ->  Entero\n";} | 
+	V_VAR {cout << "VALOR ->  VALORVARIABLE\n";};
+
+CIR_LOG: MIN {cout << "OPERADOR_LOGICO  ->  <\n";} | 
+	 MAX {cout << "OPERADOR_LOGICO  ->  >\n";} | 
+	 IG IG {cout << "OPERADOR_LOGICO  ->  ==\n";} | 
+	 MIN IG {cout << "OPERADOR_LOGICO  ->  <=\n";} | 
+	 MAX IG {cout << "OPERADOR_LOGICO  ->  >=\n";};
+
+FOR: 	FORT ID TO ID DP S1 DONE {cout << "FOR  ->  for id  to  id :  S1  done\n";} | 
+	ID TO ENT DP S1 DONE {cout << "FOR  ->  id  to  entero :  S1  done\n";};
+
+IMP: IMPT AP IMP2 CP PC {cout << "IMPRIMIR  ->  imprimir(  IMPRIMIR2  );\n";};
+
+IMP2: 	ASI {cout << "IMPRIMIR2  ->  ASIGNACION\n";} | 
+	CADENA {cout << "IMPRIMIR2  ->  CADENA\n";} | 
+	ASI MAS IMP2 {cout << "IMPRIMIR2  ->  ASIGNACION + IMPRIMIR2\n";} | 
+	CADENA MAS IMP2 {cout << "CADENA + IMPRIMIR2\n";};
 
 %%
 //-- FUNCTION DEFINITIONS ---------------------------------

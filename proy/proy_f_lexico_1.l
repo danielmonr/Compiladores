@@ -1,5 +1,6 @@
 %{
 #include <iostream>
+#include "gramatica.tab.hpp"
 using namespace std;
 %}
 
@@ -22,6 +23,10 @@ CA \"[a-z0-9]*\"
 "done"	 { return DONE; }
 "to" 		 { return TO; }
 "int"      { return INT; }
+"x"                          { return X; }
+"y"                          { return Y; }
+"imprimir"                                      { return IMPT; }
+"for" { return FORT; }
 {ID}                  { return ID; }
 {DIGIT}+              { return ENT; }
 {CA}				{ return CADENA;}
@@ -34,30 +39,16 @@ CA \"[a-z0-9]*\"
 ")"      { return CP; }
 "["      { return AC; }
 "]"      { return CC; }
-"<"      { return MINQ; }
+"<"      { return MIN; }
 ">"      { return MAX; }
 ";"      { return PC; }
 "."		 { return PT; }
 ","		 { return CO; }
 "movimiento_horizontal"		{ return MH; }
 "tiro_parabolico"			{ return TIRO; }
-"x"							{ return X; }
-"y"							{ return Y; }
-"imprimir"					{ return IMPT; }
-
 
 
 <<EOF>>  { return 0; }
 [ \t\n]+ { }
 .        { cerr << "Unrecognized token!" << endl; exit(1); }
 %%
-
-main( int argc, char **argv )
-{
-    ++argv, --argc;	/* skip over program name */
-    if ( argc > 0 )
-       yyin = fopen( argv[0], "r" );
-    else
-       yyin = stdin;
-       yylex();
-}
