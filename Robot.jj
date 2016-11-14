@@ -1,0 +1,202 @@
+PARSER_BEGIN(Robot)
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Robot {
+
+	public static String res = new String();
+
+  public static void main(String args[]) throws ParseException {
+    try {
+      Robot parser = new Robot(new java.io.FileInputStream(args[0]));
+      parser.Program();
+    }
+    catch(java.io.FileNotFoundException e)
+    {
+      System.out.println("El archivo no esta...");
+    }
+  }
+
+}
+
+PARSER_END(Robot)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+   < SI: "Si" >
+|  < V1: "s1" >
+|  < V2: "s2" >
+|  < V3: "s3" >
+|  < ENT: "entonces" >
+|  < FIN: "Fin" >
+|  < AVANZA: "avanza" >
+|  < RETROCEDE: "retrocede" >
+|  < GIRA: "gira" >
+|  < VAR: ["s"]["1"-"3"] >
+| <REPITE: "Repite">
+| <VECES: "veces">
+| <IZQ: "izq">
+| <DER: "der+" >
+| < MEQ: "<" >
+| < MAQ: ">" >
+| < DIGITO: ["0"-"9"] (["0"-"9"])* >
+| < PA: "(" >
+| < PC: ")" >
+| < C: "," >
+| < DP: ":">
+}
+
+
+void Program() :
+{ System.out.println("Iniciando revision del programa");
+	res = "#include <iostream> \n #include \"Robot.h\" \n int main(){ \n\n Robot r1();\n r1.connect();\n\n";
+}
+{
+  Control()
+	{
+	res+="r1.exit(); \n }";
+
+	try {
+
+			File file = new File("res.txt");
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(res);
+			bw.close();
+
+			System.out.println("Done");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	<EOF>
+}
+
+
+void Control() :
+{ System.out.println("Iniciando revision del programa");
+}
+{
+  (ControlIf()
+	|ControlRepite()
+	|(Funcion()))+
+}
+
+void ControlIf() :
+{System.out.println("Un si");
+Token v; Token c; Token d;
+}
+{
+	<SI> v = <VAR> ( c = <MAQ> | c = <MEQ>) d = <DIGITO> <ENT>
+	{
+	String sonar="";
+	switch (v.image) {
+	case "s1": sonar="sonar1";
+	break;
+	case "s2": sonar="sonar2";
+	break;
+	case "s3": sonar="sonar3";
+	break;
+	}
+
+	int dig = Integer.parseInt(d.image);
+	if(dig <= 30 || dig>=500 ){
+		System.out.println("Error: El valor debe estar entre 30 y 500.");
+	}
+
+		res+="int "+v.image+" = r1.read("+sonar+"); \n if ("+v.image+c.image+d.image+") {\n";
+	}
+
+	Control() <FIN>
+	{
+		res+="}\n";
+	}
+
+}
+
+void ControlRepite() :
+{System.out.println("Un repite");
+Token d;
+}
+{
+	<REPITE> d = <DIGITO> <VECES> <DP>
+{
+	res+="for(int i=0; i<"+d.image+"; i++) {\n";
+}
+
+	Control() <FIN>
+	{
+		res+="}\n";
+	}
+
+}
+
+void Funcion() :
+{System.out.println("Una función");
+Token d;
+String dir="";
+int dig=0;
+}
+{
+	(<AVANZA> <PA> d = <DIGITO> <PC>
+	{
+	dig = Integer.parseInt(d.image);
+	if(dig>=500 ){
+		System.out.println("Warning: El valor no debe ser mayor a 500.");
+	}
+	res+= "r1.lock(); \nr1.move("+d.image+"0); \nr1.unlock(); \n ";
+	}
+	|<RETROCEDE> <PA> d = <DIGITO> <PC>
+	{
+	dig = Integer.parseInt(d.image);
+	if(dig>=500 ){
+		System.out.println("Warning: El valor no debe ser mayor a 500.");
+	}
+	res+= "r1.lock(); \nr1.move(-"+d.image+"0); \nr1.unlock(); \n ";
+	}
+	|<GIRA> <PA> d = <DIGITO> <C> dir = Direccion() <PC>)
+	{
+	dig = Integer.parseInt(d.image);
+	if(dig>=180 ){
+		System.out.println("Error: El valor debe estar entre 0 y 180 grados.");
+	}
+	switch (dir){
+	case "izq":
+		res+= "r1.lock(); \nr1.setDeltaHeading(-"+d.image+"); \nr1.unlock(); \n ";
+	break;
+	case "der":
+		res+= "r1.lock(); \nr1.setDeltaHeading("+d.image+"); \nr1.unlock(); \n ";
+	break;
+	}
+
+	}
+
+}
+
+String Direccion() :
+{ System.out.println("Revisa dirección");
+}
+{
+  <IZQ>
+	{return "izq";}
+	|<DER>
+	{return "der";}
+}

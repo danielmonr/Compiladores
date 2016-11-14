@@ -1,0 +1,69 @@
+%{
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <map>
+#include <cstdlib>
+using namespace std;
+
+map <string,int> tabla;
+
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; return 0; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  int val; 
+  char sym;
+  char *lexema;
+};
+%token <lexema> ID
+%token <val> ENTERO REAL INT FLOAT
+%token <sym> MAS IGUAL PC
+%type  <val> program declara cuerpo suma unaDeclara tipo
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+program: declara cuerpo  { cout << "Un programa revisado" << endl; }
+
+declara: unaDeclara         { cout << "Una Declaracion" << endl; }
+       | unaDeclara declara  { cout << "Una declaracion y mas" << endl; }
+
+unaDeclara: tipo ID PC      { 
+                              cout << "Una declaración reconocida" << endl; 
+                              string lex($2);
+                              tabla[lex] = $1;
+                              cout << "Variable "<<$2<<" es "<<tabla[$2]<< endl; 
+                            }
+
+tipo: INT              { cout << "Palabra int" << endl; $$ = 1;}
+    | FLOAT            { cout << "Palabra float" << endl; $$ = 2;}
+
+cuerpo: suma         { 
+                       cout << "Una suma" << endl; 
+                     }
+       
+suma: ID IGUAL ID MAS REAL PC { 
+                                //Reviso ID antes del IGUAL
+                                if(tabla.find($1) != tabla.end())
+                                   cout<<"ID declarado"<<endl;
+                                else
+                                   cout<<"ID NO declarado"<<endl;
+                                cout << "suma" << endl; 
+                              }
+
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main( int argc, char **argv )
+{
+    ++argv, --argc;     /* skip over program name */
+    if ( argc > 0 )
+       yyin = fopen( argv[0], "r" );
+    else
+       yyin = stdin;
+ 
+  yyparse();
+  return 0;
+}

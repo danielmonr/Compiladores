@@ -1,0 +1,114 @@
+%{
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
+#include <map>
+#include <cstdlib> //-- I need this for atoi
+using namespace std;
+int num=1;
+//-- Lexer prototype required by bison, aka getNextToken()
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; return 0; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  char sym;
+  char *lexema;
+  struct lc {
+    char *codigo;
+    char *lugar;
+  } code;
+};
+%token <lexema> ID
+%token <sym> OPA OPM LP RP EQ MI STOP
+%type <code> prog expr
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+prog: ID EQ expr STOP      {  cout<<"S->id=E"<<endl; 
+                              $$.codigo = strdup($3.codigo);
+                              char aux[20];
+                              sprintf(aux,"%s=%s",$1,$3.lugar);
+                              strcat($$.codigo,aux);
+                              cout<<"--------------"<<endl;
+                              cout<<$$.codigo<<endl;
+                              FILE *f = fopen("salida.txt","w");
+                              fprintf(f, "%s", $$.codigo);
+                              fclose(f); 
+                              exit(0);
+                           }
+
+expr: expr OPA expr   { cout <<"e->e+e"<<endl;
+
+                        $$.lugar = (char *)malloc(13*sizeof(char));
+                        $$.lugar = strdup("");
+                        sprintf($$.lugar,"t%d",num++);
+
+                        $$.codigo = (char *)malloc(sizeof($1.codigo)+sizeof($3.codigo)+45);
+                        $$.codigo = strdup($1.codigo);
+                        strcat($$.codigo, $3.codigo);
+
+                        char aux[20];
+                        sprintf(aux,"%s=%s+%s",$$.lugar,$1.lugar,$3.lugar);
+                        strcat($$.codigo,aux);
+                        strcat($$.codigo,"\n");
+                      }
+| expr OPM expr       { cout <<"e->e*e"<<endl;
+
+                        $$.lugar = (char *)malloc(13*sizeof(char));
+                        $$.lugar = strdup("");
+                        sprintf($$.lugar,"t%d",num++);
+
+                        $$.codigo = (char *)malloc(sizeof($1.codigo)+sizeof($3.codigo)+45);
+                        $$.codigo = strdup($1.codigo);
+                        strcat($$.codigo, $3.codigo);
+
+                        char aux[20];
+                        sprintf(aux,"%s=%s*%s",$$.lugar,$1.lugar,$3.lugar);
+                        strcat($$.codigo,aux);
+                        strcat($$.codigo,"\n");
+                      }
+| MI expr             { cout<<"e->-e"<<endl;
+
+                        $$.lugar = (char *)malloc(13*sizeof(char));
+                        $$.lugar = strdup("");
+                        sprintf($$.lugar,"t%d",num++);
+
+                        $$.codigo = (char *)malloc(sizeof($2.codigo));
+                        $$.codigo = strdup($2.codigo); 
+
+                        char aux[20];
+                        sprintf(aux,"%s=-%s",$$.lugar,$2.lugar);
+                        strcat($$.codigo,aux);
+                        strcat($$.codigo,"\n");
+                      }
+| LP expr RP          { cout<<"e->(e)"<<endl;
+
+                        $$.lugar = (char *)malloc(13*sizeof(char));
+                        $$.lugar = strdup($2.lugar);
+
+                        $$.codigo = (char *)malloc(sizeof($2.codigo));
+                        $$.codigo = strdup($2.codigo);
+                        strcat($$.codigo,"\n");
+                      }
+| ID                  { 
+                        $$.lugar = (char *)malloc(13*sizeof(char));
+                        $$.lugar = strdup($1); 
+                        strcpy($$.codigo,"");
+                        cout<<"e->"<<$1<<" "<<$$.lugar<<endl;
+                      }
+
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main(int argc, char **argv)
+{
+  ++argv, --argc;
+  if( argc > 0 )
+    yyin = fopen( argv[0], "r" );
+  else
+    yyin = stdin;
+  yyparse();
+  return 0;
+}

@@ -1,0 +1,120 @@
+%{
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <cstdlib>
+#include <map>
+using namespace std;
+
+map <string, int> tabla;
+int num =1;
+
+extern FILE *yyin;
+int yylex(); 
+int yyerror(const char *p) { cerr << "Error!" << endl; return 0; }
+%}
+
+//-- SYMBOL SEMANTIC VALUES -----------------------------
+%union {
+  int val; 
+  char sym;
+  char *lexema;
+  struct lc {
+    char *codigo;
+    char *lugar;
+  } code;
+};
+%token <lexema> ID ENTERO REAL
+%token <val> PROG IF THEN ELSE INT FLOAT
+%token <sym> MAS IGUAL LA LC MEQ MAQ PC
+%type  <code> program declara cuerpo estru_if compara suma unaDeclara estru sim
+%type <val> tipo
+
+//-- GRAMMAR RULES ---------------------------------------
+%%
+program: PROG ID LA declara cuerpo LC  { cout << "Un programa revisado" << endl; 
+                                          $$.codigo = (char*) malloc(512);
+                                          $$.codigo = strcat(strdup($4.codigo), strdup($5.codigo));
+                                          cout << "codigo: " << $$.codigo << "\n";
+                                          FILE *f = fopen("codigo.txt", "w");
+                                          fprintf(f, "%s", $$.codigo);
+                                          fclose(f);}
+
+declara: unaDeclara         { cout << "Una Declaracion" << endl; 
+                              $$.codigo = (char*) malloc(512);
+                              $$.codigo = strdup($1.codigo);}
+       | unaDeclara declara  { cout << "Una declaracion y mas" << endl;
+                              $$.codigo = (char*)malloc(512);
+                              $$.codigo = strcat(strdup($1.codigo), strdup($2.codigo)); 
+                            }
+
+unaDeclara: tipo ID PC      { cout << "Una declaración reconocida" << endl; 
+                              string lex($2);
+                              tabla[lex] = $1;
+                              cout << "Variable "<<$2<<" es "<<tabla[$2]<< endl;
+                              $$.codigo = (char*)malloc(512);
+                              if($1 == 1)
+                                $$.codigo = strcat(strcat("int ", $2), "\n");
+                              else
+                                $$.codigo = strcat(strcat("float ", $2), "\n");
+                              }
+
+tipo: INT              { cout << "Palabra int" << endl; 
+                          $$ = 1;}
+    | FLOAT            { cout << "Palabra float" << endl; 
+                          $$ = 2;}
+
+cuerpo: estru cuerpo         { cout << "Una estru seguida de cuerpo" << endl; 
+                              $$.codigo = (char*)malloc(512);
+                              $$.codigo = strcat($1.codigo, $2.codigo);}
+       |                     { cout << "Epsilon" << endl; 
+                              $$.codigo = (char*)malloc(1);
+                              $$.codigo = "";}
+       
+
+estru: estru_if            { cout << "Estructura if reconocida" << endl; 
+                            $$.codigo = (char*)malloc(512);
+                            $$.codigo = strdup($1.codigo);}
+     | suma                { cout << "Suma reconocida" << endl; 
+                            $$.codigo = (char*)malloc(512);
+                            $$.codigo = strdup($1.codigo);}
+
+suma: ID IGUAL ID MAS REAL PC { cout << "suma" << endl; 
+                                if(tabla.find($1) != tabla.end() && tabla.find($3) != tabla.end())
+                                   cout<<"ID declarados"<<endl;
+                                else
+                                   cout<<"ID NO declarados"<<endl;
+                                if(tabla.find($1)->second != 2)
+                                    cout << "Error, suma no es float.\n";
+                                else
+                                    cout << "Suma es un float.\n";
+
+                                $$.codigo = (char*)malloc(512);
+                                $$.codigo = strcat($1, strcat("=", strcat($3, strcat("+",$5))));}
+
+estru_if: IF compara THEN estru ELSE estru  { cout << "if-then-else" << endl; 
+                                              $$.codigo = (char*)malloc(512);
+                                              }
+
+compara: ID sim ENTERO  { cout << "una comparacion" << endl; 
+                          if(tabla.find($1) != tabla.end())
+                              cout << "Id declarado.\n";
+                          else
+                            cout << "ID no declarado.\n";}
+
+sim: MEQ        { cout << "menor que" << endl; }
+| MAQ           { cout << "mayor que" << endl; }
+
+%%
+//-- FUNCTION DEFINITIONS ---------------------------------
+int main( int argc, char **argv )
+{
+    ++argv, --argc;     /* skip over program name */
+    if ( argc > 0 )
+       yyin = fopen( argv[0], "r" );
+    else
+       yyin = stdin;
+ 
+  yyparse();
+  return 0;
+}

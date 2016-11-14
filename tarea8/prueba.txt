@@ -1,0 +1,4 @@
+program lol {
+	int var;
+	var = var + 3.1;
+}

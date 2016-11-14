@@ -1,0 +1,2060 @@
+Rules useless in parser due to conflicts
+
+   17 TIPO: INT
+   18     | POS
+   19     | OBJ
+   20     | TMP
+
+   47 OP: ASI CIR OP
+
+
+State 6 conflicts: 1 shift/reduce
+State 7 conflicts: 1 shift/reduce
+State 8 conflicts: 1 shift/reduce
+State 9 conflicts: 1 shift/reduce
+State 83 conflicts: 4 shift/reduce
+State 84 conflicts: 20 reduce/reduce
+State 100 conflicts: 3 shift/reduce
+
+
+Grammar
+
+    0 $accept: S $end
+
+    1 S: INI S1 END
+
+    2 S1: %empty
+    3   | D_VAR S1
+    4   | E_COND S1
+    5   | OP S1
+    6   | IMP S1
+
+    7 D_VAR: TIPO VAR PC
+    8      | I_NOR
+    9      | I_POS
+   10      | I_OBJ
+   11      | I_ARR
+
+   12 I_NOR: INT VAR IG ASI PC
+   13      | TMP VAR IG ASI PC
+
+   14 I_POS: POS VAR IG ASI PC
+
+   15 I_OBJ: OBJ VAR IG ASI_OBJ PC
+
+   16 I_ARR: TIPO VAR IG ASI_ARR PC
+
+   17 TIPO: INT
+   18     | POS
+   19     | OBJ
+   20     | TMP
+
+   21 VAR: VAR_NOR
+   22    | VAR_ARR
+
+   23 VAR_NOR: ID
+
+   24 VAR_ARR: ID AC ENT CC
+
+   25 FUNC: MOV_HOR
+   26     | T_PAR
+
+   27 MOV_HOR: MH AP ASI_OBJ CO CP PC
+
+   28 T_PAR: TIRO AP ASI_OBJ CO ASI CP PC
+
+   29 ASI: ENT
+   30    | VAR
+   31    | AP ASI CP
+   32    | V_VAR
+   33    | OP
+
+   34 ASI_POS: AP ASI CO ASI CP
+   35        | VAR
+   36        | FUNC
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO ASI CO ASI CP
+   38        | VAR
+
+   39 ASI_ARR: ENT CO ASI_ARR
+   40        | VAR CO ASI_ARR
+   41        | ENT
+   42        | VAR
+
+   43 V_VAR: ID PT X
+   44      | ID PT Y
+
+   45 OP: ASI CIR ASI
+   46   | ASI CIR2
+   47   | ASI CIR OP
+
+   48 CIR: MAS
+   49    | MENOS
+   50    | POR
+   51    | DIV
+
+   52 CIR2: MAS MAS
+   53     | MENOS MENOS
+
+   54 E_COND: IF
+   55       | FOR
+
+   56 IF: IFT COND DP S1 DONE
+   57   | IFT COND DP S1 ELSE DP S1 DONE
+
+   58 COND: VAL CIR_LOG VAL
+
+   59 VAL: VAR
+   60    | ENT
+   61    | V_VAR
+
+   62 CIR_LOG: MIN
+   63        | MAX
+   64        | IG IG
+   65        | MIN IG
+   66        | MAX IG
+
+   67 FOR: FORT ID TO ID DP S1 DONE
+   68    | ID TO ENT DP S1 DONE
+
+   69 IMP: IMPT AP IMP2 CP PC
+
+   70 IMP2: ASI
+   71     | CADENA
+   72     | ASI MAS IMP2
+   73     | CADENA MAS IMP2
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ID (258) 23 24 43 44 67 68
+CADENA (259) 71 73
+ENT (260) 24 29 39 41 60 68
+FORT (261) 67
+INI (262) 1
+END (263) 1
+PC (264) 7 12 13 14 15 16 27 28 69
+INT (265) 12 17
+IG (266) 12 13 14 15 16 64 65 66
+TMP (267) 13 20
+POS (268) 14 18
+OBJ (269) 15 19
+AC (270) 24
+CC (271) 24
+MH (272) 27
+AP (273) 27 28 31 34 37 69
+CP (274) 27 28 31 34 37 69
+CO (275) 27 28 34 37 39 40
+TIRO (276) 28
+PT (277) 43 44
+X (278) 43
+Y (279) 44
+MAS (280) 48 52 72 73
+MENOS (281) 49 53
+POR (282) 50
+DIV (283) 51
+IFT (284) 56 57
+ELSE (285) 57
+DP (286) 56 57 67 68
+DONE (287) 56 57 67 68
+MIN (288) 62 65
+MAX (289) 63 66
+IMPT (290) 69
+TO (291) 67 68
+
+
+Nonterminals, with rules where they appear
+
+$accept (37)
+    on left: 0
+S (38)
+    on left: 1, on right: 0
+S1 (39)
+    on left: 2 3 4 5 6, on right: 1 3 4 5 6 56 57 67 68
+D_VAR (40)
+    on left: 7 8 9 10 11, on right: 3
+I_NOR (41)
+    on left: 12 13, on right: 8
+I_POS (42)
+    on left: 14, on right: 9
+I_OBJ (43)
+    on left: 15, on right: 10
+I_ARR (44)
+    on left: 16, on right: 11
+TIPO (45)
+    on left: 17 18 19 20, on right: 7 16
+VAR (46)
+    on left: 21 22, on right: 7 12 13 14 15 16 30 35 38 40 42 59
+VAR_NOR (47)
+    on left: 23, on right: 21
+VAR_ARR (48)
+    on left: 24, on right: 22
+FUNC (49)
+    on left: 25 26, on right: 36
+MOV_HOR (50)
+    on left: 27, on right: 25
+T_PAR (51)
+    on left: 28, on right: 26
+ASI (52)
+    on left: 29 30 31 32 33, on right: 12 13 14 28 31 34 37 45 46 47
+    70 72
+ASI_POS (53)
+    on left: 34 35 36, on right: 37
+ASI_OBJ (54)
+    on left: 37 38, on right: 15 27 28
+ASI_ARR (55)
+    on left: 39 40 41 42, on right: 16 39 40
+V_VAR (56)
+    on left: 43 44, on right: 32 61
+OP (57)
+    on left: 45 46 47, on right: 5 33 47
+CIR (58)
+    on left: 48 49 50 51, on right: 45 47
+CIR2 (59)
+    on left: 52 53, on right: 46
+E_COND (60)
+    on left: 54 55, on right: 4
+IF (61)
+    on left: 56 57, on right: 54
+COND (62)
+    on left: 58, on right: 56 57
+VAL (63)
+    on left: 59 60 61, on right: 58
+CIR_LOG (64)
+    on left: 62 63 64 65 66, on right: 58
+FOR (65)
+    on left: 67 68, on right: 55
+IMP (66)
+    on left: 69, on right: 6
+IMP2 (67)
+    on left: 70 71 72 73, on right: 69 72 73
+
+
+State 0
+
+    0 $accept: . S $end
+
+    INI  shift, and go to state 1
+
+    S  go to state 2
+
+
+State 1
+
+    1 S: INI . S1 END
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 13
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 2
+
+    0 $accept: S . $end
+
+    $end  shift, and go to state 30
+
+
+State 3
+
+   23 VAR_NOR: ID .
+   24 VAR_ARR: ID . AC ENT CC
+   43 V_VAR: ID . PT X
+   44      | ID . PT Y
+   68 FOR: ID . TO ENT DP S1 DONE
+
+    AC  shift, and go to state 31
+    PT  shift, and go to state 32
+    TO  shift, and go to state 33
+
+    $default  reduce using rule 23 (VAR_NOR)
+
+
+State 4
+
+   29 ASI: ENT .
+
+    $default  reduce using rule 29 (ASI)
+
+
+State 5
+
+   67 FOR: FORT . ID TO ID DP S1 DONE
+
+    ID  shift, and go to state 34
+
+
+State 6
+
+   12 I_NOR: INT . VAR IG ASI PC
+   17 TIPO: INT .
+
+    ID  shift, and go to state 35
+
+    ID  [reduce using rule 17 (TIPO)]
+
+    VAR      go to state 36
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+
+
+State 7
+
+   13 I_NOR: TMP . VAR IG ASI PC
+   20 TIPO: TMP .
+
+    ID  shift, and go to state 35
+
+    ID  [reduce using rule 20 (TIPO)]
+
+    VAR      go to state 37
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+
+
+State 8
+
+   14 I_POS: POS . VAR IG ASI PC
+   18 TIPO: POS .
+
+    ID  shift, and go to state 35
+
+    ID  [reduce using rule 18 (TIPO)]
+
+    VAR      go to state 38
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+
+
+State 9
+
+   15 I_OBJ: OBJ . VAR IG ASI_OBJ PC
+   19 TIPO: OBJ .
+
+    ID  shift, and go to state 35
+
+    ID  [reduce using rule 19 (TIPO)]
+
+    VAR      go to state 39
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+
+
+State 10
+
+   31 ASI: AP . ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 41
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 11
+
+   56 IF: IFT . COND DP S1 DONE
+   57   | IFT . COND DP S1 ELSE DP S1 DONE
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 43
+
+    VAR      go to state 44
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    V_VAR    go to state 45
+    COND     go to state 46
+    VAL      go to state 47
+
+
+State 12
+
+   69 IMP: IMPT . AP IMP2 CP PC
+
+    AP  shift, and go to state 48
+
+
+State 13
+
+    1 S: INI S1 . END
+
+    END  shift, and go to state 49
+
+
+State 14
+
+    3 S1: D_VAR . S1
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 50
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 15
+
+    8 D_VAR: I_NOR .
+
+    $default  reduce using rule 8 (D_VAR)
+
+
+State 16
+
+    9 D_VAR: I_POS .
+
+    $default  reduce using rule 9 (D_VAR)
+
+
+State 17
+
+   10 D_VAR: I_OBJ .
+
+    $default  reduce using rule 10 (D_VAR)
+
+
+State 18
+
+   11 D_VAR: I_ARR .
+
+    $default  reduce using rule 11 (D_VAR)
+
+
+State 19
+
+    7 D_VAR: TIPO . VAR PC
+   16 I_ARR: TIPO . VAR IG ASI_ARR PC
+
+    ID  shift, and go to state 35
+
+    VAR      go to state 51
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+
+
+State 20
+
+   30 ASI: VAR .
+
+    $default  reduce using rule 30 (ASI)
+
+
+State 21
+
+   21 VAR: VAR_NOR .
+
+    $default  reduce using rule 21 (VAR)
+
+
+State 22
+
+   22 VAR: VAR_ARR .
+
+    $default  reduce using rule 22 (VAR)
+
+
+State 23
+
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 24
+
+   32 ASI: V_VAR .
+
+    $default  reduce using rule 32 (ASI)
+
+
+State 25
+
+    5 S1: OP . S1
+   33 ASI: OP .
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    END       reduce using rule 2 (S1)
+    ELSE      reduce using rule 2 (S1)
+    DONE      reduce using rule 2 (S1)
+    $default  reduce using rule 33 (ASI)
+
+    S1       go to state 58
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 26
+
+    4 S1: E_COND . S1
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 59
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 27
+
+   54 E_COND: IF .
+
+    $default  reduce using rule 54 (E_COND)
+
+
+State 28
+
+   55 E_COND: FOR .
+
+    $default  reduce using rule 55 (E_COND)
+
+
+State 29
+
+    6 S1: IMP . S1
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 60
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 30
+
+    0 $accept: S $end .
+
+    $default  accept
+
+
+State 31
+
+   24 VAR_ARR: ID AC . ENT CC
+
+    ENT  shift, and go to state 61
+
+
+State 32
+
+   43 V_VAR: ID PT . X
+   44      | ID PT . Y
+
+    X  shift, and go to state 62
+    Y  shift, and go to state 63
+
+
+State 33
+
+   68 FOR: ID TO . ENT DP S1 DONE
+
+    ENT  shift, and go to state 64
+
+
+State 34
+
+   67 FOR: FORT ID . TO ID DP S1 DONE
+
+    TO  shift, and go to state 65
+
+
+State 35
+
+   23 VAR_NOR: ID .
+   24 VAR_ARR: ID . AC ENT CC
+
+    AC  shift, and go to state 31
+
+    $default  reduce using rule 23 (VAR_NOR)
+
+
+State 36
+
+   12 I_NOR: INT VAR . IG ASI PC
+
+    IG  shift, and go to state 66
+
+
+State 37
+
+   13 I_NOR: TMP VAR . IG ASI PC
+
+    IG  shift, and go to state 67
+
+
+State 38
+
+   14 I_POS: POS VAR . IG ASI PC
+
+    IG  shift, and go to state 68
+
+
+State 39
+
+   15 I_OBJ: OBJ VAR . IG ASI_OBJ PC
+
+    IG  shift, and go to state 69
+
+
+State 40
+
+   23 VAR_NOR: ID .
+   24 VAR_ARR: ID . AC ENT CC
+   43 V_VAR: ID . PT X
+   44      | ID . PT Y
+
+    AC  shift, and go to state 31
+    PT  shift, and go to state 32
+
+    $default  reduce using rule 23 (VAR_NOR)
+
+
+State 41
+
+   31 ASI: AP ASI . CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CP     shift, and go to state 70
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 42
+
+   33 ASI: OP .
+
+    $default  reduce using rule 33 (ASI)
+
+
+State 43
+
+   60 VAL: ENT .
+
+    $default  reduce using rule 60 (VAL)
+
+
+State 44
+
+   59 VAL: VAR .
+
+    $default  reduce using rule 59 (VAL)
+
+
+State 45
+
+   61 VAL: V_VAR .
+
+    $default  reduce using rule 61 (VAL)
+
+
+State 46
+
+   56 IF: IFT COND . DP S1 DONE
+   57   | IFT COND . DP S1 ELSE DP S1 DONE
+
+    DP  shift, and go to state 71
+
+
+State 47
+
+   58 COND: VAL . CIR_LOG VAL
+
+    IG   shift, and go to state 72
+    MIN  shift, and go to state 73
+    MAX  shift, and go to state 74
+
+    CIR_LOG  go to state 75
+
+
+State 48
+
+   69 IMP: IMPT AP . IMP2 CP PC
+
+    ID      shift, and go to state 40
+    CADENA  shift, and go to state 76
+    ENT     shift, and go to state 4
+    AP      shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 77
+    V_VAR    go to state 24
+    OP       go to state 42
+    IMP2     go to state 78
+
+
+State 49
+
+    1 S: INI S1 END .
+
+    $default  reduce using rule 1 (S)
+
+
+State 50
+
+    3 S1: D_VAR S1 .
+
+    $default  reduce using rule 3 (S1)
+
+
+State 51
+
+    7 D_VAR: TIPO VAR . PC
+   16 I_ARR: TIPO VAR . IG ASI_ARR PC
+
+    PC  shift, and go to state 79
+    IG  shift, and go to state 80
+
+
+State 52
+
+   48 CIR: MAS .
+   52 CIR2: MAS . MAS
+
+    MAS  shift, and go to state 81
+
+    $default  reduce using rule 48 (CIR)
+
+
+State 53
+
+   49 CIR: MENOS .
+   53 CIR2: MENOS . MENOS
+
+    MENOS  shift, and go to state 82
+
+    $default  reduce using rule 49 (CIR)
+
+
+State 54
+
+   50 CIR: POR .
+
+    $default  reduce using rule 50 (CIR)
+
+
+State 55
+
+   51 CIR: DIV .
+
+    $default  reduce using rule 51 (CIR)
+
+
+State 56
+
+   45 OP: ASI CIR . ASI
+   47   | ASI CIR . OP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 83
+    V_VAR    go to state 24
+    OP       go to state 84
+
+
+State 57
+
+   46 OP: ASI CIR2 .
+
+    $default  reduce using rule 46 (OP)
+
+
+State 58
+
+    5 S1: OP S1 .
+
+    $default  reduce using rule 5 (S1)
+
+
+State 59
+
+    4 S1: E_COND S1 .
+
+    $default  reduce using rule 4 (S1)
+
+
+State 60
+
+    6 S1: IMP S1 .
+
+    $default  reduce using rule 6 (S1)
+
+
+State 61
+
+   24 VAR_ARR: ID AC ENT . CC
+
+    CC  shift, and go to state 85
+
+
+State 62
+
+   43 V_VAR: ID PT X .
+
+    $default  reduce using rule 43 (V_VAR)
+
+
+State 63
+
+   44 V_VAR: ID PT Y .
+
+    $default  reduce using rule 44 (V_VAR)
+
+
+State 64
+
+   68 FOR: ID TO ENT . DP S1 DONE
+
+    DP  shift, and go to state 86
+
+
+State 65
+
+   67 FOR: FORT ID TO . ID DP S1 DONE
+
+    ID  shift, and go to state 87
+
+
+State 66
+
+   12 I_NOR: INT VAR IG . ASI PC
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 88
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 67
+
+   13 I_NOR: TMP VAR IG . ASI PC
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 89
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 68
+
+   14 I_POS: POS VAR IG . ASI PC
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 90
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 69
+
+   15 I_OBJ: OBJ VAR IG . ASI_OBJ PC
+
+    ID  shift, and go to state 35
+    AP  shift, and go to state 91
+
+    VAR      go to state 92
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_OBJ  go to state 93
+
+
+State 70
+
+   31 ASI: AP ASI CP .
+
+    $default  reduce using rule 31 (ASI)
+
+
+State 71
+
+   56 IF: IFT COND DP . S1 DONE
+   57   | IFT COND DP . S1 ELSE DP S1 DONE
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 94
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 72
+
+   64 CIR_LOG: IG . IG
+
+    IG  shift, and go to state 95
+
+
+State 73
+
+   62 CIR_LOG: MIN .
+   65        | MIN . IG
+
+    IG  shift, and go to state 96
+
+    $default  reduce using rule 62 (CIR_LOG)
+
+
+State 74
+
+   63 CIR_LOG: MAX .
+   66        | MAX . IG
+
+    IG  shift, and go to state 97
+
+    $default  reduce using rule 63 (CIR_LOG)
+
+
+State 75
+
+   58 COND: VAL CIR_LOG . VAL
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 43
+
+    VAR      go to state 44
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    V_VAR    go to state 45
+    VAL      go to state 98
+
+
+State 76
+
+   71 IMP2: CADENA .
+   73     | CADENA . MAS IMP2
+
+    MAS  shift, and go to state 99
+
+    $default  reduce using rule 71 (IMP2)
+
+
+State 77
+
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+   70 IMP2: ASI .
+   72     | ASI . MAS IMP2
+
+    MAS    shift, and go to state 100
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    $default  reduce using rule 70 (IMP2)
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 78
+
+   69 IMP: IMPT AP IMP2 . CP PC
+
+    CP  shift, and go to state 101
+
+
+State 79
+
+    7 D_VAR: TIPO VAR PC .
+
+    $default  reduce using rule 7 (D_VAR)
+
+
+State 80
+
+   16 I_ARR: TIPO VAR IG . ASI_ARR PC
+
+    ID   shift, and go to state 35
+    ENT  shift, and go to state 102
+
+    VAR      go to state 103
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_ARR  go to state 104
+
+
+State 81
+
+   52 CIR2: MAS MAS .
+
+    $default  reduce using rule 52 (CIR2)
+
+
+State 82
+
+   53 CIR2: MENOS MENOS .
+
+    $default  reduce using rule 53 (CIR2)
+
+
+State 83
+
+   45 OP: ASI . CIR ASI
+   45   | ASI CIR ASI .
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    MAS       [reduce using rule 45 (OP)]
+    MENOS     [reduce using rule 45 (OP)]
+    POR       [reduce using rule 45 (OP)]
+    DIV       [reduce using rule 45 (OP)]
+    $default  reduce using rule 45 (OP)
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 84
+
+   33 ASI: OP .
+   47 OP: ASI CIR OP .
+
+    ID        reduce using rule 33 (ASI)
+    ID        [reduce using rule 47 (OP)]
+    ENT       reduce using rule 33 (ASI)
+    ENT       [reduce using rule 47 (OP)]
+    FORT      reduce using rule 33 (ASI)
+    FORT      [reduce using rule 47 (OP)]
+    END       reduce using rule 33 (ASI)
+    END       [reduce using rule 47 (OP)]
+    PC        reduce using rule 33 (ASI)
+    PC        [reduce using rule 47 (OP)]
+    INT       reduce using rule 33 (ASI)
+    INT       [reduce using rule 47 (OP)]
+    TMP       reduce using rule 33 (ASI)
+    TMP       [reduce using rule 47 (OP)]
+    POS       reduce using rule 33 (ASI)
+    POS       [reduce using rule 47 (OP)]
+    OBJ       reduce using rule 33 (ASI)
+    OBJ       [reduce using rule 47 (OP)]
+    AP        reduce using rule 33 (ASI)
+    AP        [reduce using rule 47 (OP)]
+    CP        reduce using rule 33 (ASI)
+    CP        [reduce using rule 47 (OP)]
+    CO        reduce using rule 33 (ASI)
+    CO        [reduce using rule 47 (OP)]
+    MAS       reduce using rule 33 (ASI)
+    MAS       [reduce using rule 47 (OP)]
+    MENOS     reduce using rule 33 (ASI)
+    MENOS     [reduce using rule 47 (OP)]
+    POR       reduce using rule 33 (ASI)
+    POR       [reduce using rule 47 (OP)]
+    DIV       reduce using rule 33 (ASI)
+    DIV       [reduce using rule 47 (OP)]
+    IFT       reduce using rule 33 (ASI)
+    IFT       [reduce using rule 47 (OP)]
+    ELSE      reduce using rule 33 (ASI)
+    ELSE      [reduce using rule 47 (OP)]
+    DONE      reduce using rule 33 (ASI)
+    DONE      [reduce using rule 47 (OP)]
+    IMPT      reduce using rule 33 (ASI)
+    IMPT      [reduce using rule 47 (OP)]
+    $default  reduce using rule 33 (ASI)
+
+
+State 85
+
+   24 VAR_ARR: ID AC ENT CC .
+
+    $default  reduce using rule 24 (VAR_ARR)
+
+
+State 86
+
+   68 FOR: ID TO ENT DP . S1 DONE
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 105
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 87
+
+   67 FOR: FORT ID TO ID . DP S1 DONE
+
+    DP  shift, and go to state 106
+
+
+State 88
+
+   12 I_NOR: INT VAR IG ASI . PC
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    PC     shift, and go to state 107
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 89
+
+   13 I_NOR: TMP VAR IG ASI . PC
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    PC     shift, and go to state 108
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 90
+
+   14 I_POS: POS VAR IG ASI . PC
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    PC     shift, and go to state 109
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 91
+
+   37 ASI_OBJ: AP . ASI_POS CO ASI CO ASI CO ASI CP
+
+    ID    shift, and go to state 35
+    MH    shift, and go to state 110
+    AP    shift, and go to state 111
+    TIRO  shift, and go to state 112
+
+    VAR      go to state 113
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    FUNC     go to state 114
+    MOV_HOR  go to state 115
+    T_PAR    go to state 116
+    ASI_POS  go to state 117
+
+
+State 92
+
+   38 ASI_OBJ: VAR .
+
+    $default  reduce using rule 38 (ASI_OBJ)
+
+
+State 93
+
+   15 I_OBJ: OBJ VAR IG ASI_OBJ . PC
+
+    PC  shift, and go to state 118
+
+
+State 94
+
+   56 IF: IFT COND DP S1 . DONE
+   57   | IFT COND DP S1 . ELSE DP S1 DONE
+
+    ELSE  shift, and go to state 119
+    DONE  shift, and go to state 120
+
+
+State 95
+
+   64 CIR_LOG: IG IG .
+
+    $default  reduce using rule 64 (CIR_LOG)
+
+
+State 96
+
+   65 CIR_LOG: MIN IG .
+
+    $default  reduce using rule 65 (CIR_LOG)
+
+
+State 97
+
+   66 CIR_LOG: MAX IG .
+
+    $default  reduce using rule 66 (CIR_LOG)
+
+
+State 98
+
+   58 COND: VAL CIR_LOG VAL .
+
+    $default  reduce using rule 58 (COND)
+
+
+State 99
+
+   73 IMP2: CADENA MAS . IMP2
+
+    ID      shift, and go to state 40
+    CADENA  shift, and go to state 76
+    ENT     shift, and go to state 4
+    AP      shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 77
+    V_VAR    go to state 24
+    OP       go to state 42
+    IMP2     go to state 121
+
+
+State 100
+
+   48 CIR: MAS .
+   52 CIR2: MAS . MAS
+   72 IMP2: ASI MAS . IMP2
+
+    ID      shift, and go to state 40
+    CADENA  shift, and go to state 76
+    ENT     shift, and go to state 4
+    AP      shift, and go to state 10
+    MAS     shift, and go to state 81
+
+    ID   [reduce using rule 48 (CIR)]
+    ENT  [reduce using rule 48 (CIR)]
+    AP   [reduce using rule 48 (CIR)]
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 77
+    V_VAR    go to state 24
+    OP       go to state 42
+    IMP2     go to state 122
+
+
+State 101
+
+   69 IMP: IMPT AP IMP2 CP . PC
+
+    PC  shift, and go to state 123
+
+
+State 102
+
+   39 ASI_ARR: ENT . CO ASI_ARR
+   41        | ENT .
+
+    CO  shift, and go to state 124
+
+    $default  reduce using rule 41 (ASI_ARR)
+
+
+State 103
+
+   40 ASI_ARR: VAR . CO ASI_ARR
+   42        | VAR .
+
+    CO  shift, and go to state 125
+
+    $default  reduce using rule 42 (ASI_ARR)
+
+
+State 104
+
+   16 I_ARR: TIPO VAR IG ASI_ARR . PC
+
+    PC  shift, and go to state 126
+
+
+State 105
+
+   68 FOR: ID TO ENT DP S1 . DONE
+
+    DONE  shift, and go to state 127
+
+
+State 106
+
+   67 FOR: FORT ID TO ID DP . S1 DONE
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 128
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 107
+
+   12 I_NOR: INT VAR IG ASI PC .
+
+    $default  reduce using rule 12 (I_NOR)
+
+
+State 108
+
+   13 I_NOR: TMP VAR IG ASI PC .
+
+    $default  reduce using rule 13 (I_NOR)
+
+
+State 109
+
+   14 I_POS: POS VAR IG ASI PC .
+
+    $default  reduce using rule 14 (I_POS)
+
+
+State 110
+
+   27 MOV_HOR: MH . AP ASI_OBJ CO CP PC
+
+    AP  shift, and go to state 129
+
+
+State 111
+
+   34 ASI_POS: AP . ASI CO ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 130
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 112
+
+   28 T_PAR: TIRO . AP ASI_OBJ CO ASI CP PC
+
+    AP  shift, and go to state 131
+
+
+State 113
+
+   35 ASI_POS: VAR .
+
+    $default  reduce using rule 35 (ASI_POS)
+
+
+State 114
+
+   36 ASI_POS: FUNC .
+
+    $default  reduce using rule 36 (ASI_POS)
+
+
+State 115
+
+   25 FUNC: MOV_HOR .
+
+    $default  reduce using rule 25 (FUNC)
+
+
+State 116
+
+   26 FUNC: T_PAR .
+
+    $default  reduce using rule 26 (FUNC)
+
+
+State 117
+
+   37 ASI_OBJ: AP ASI_POS . CO ASI CO ASI CO ASI CP
+
+    CO  shift, and go to state 132
+
+
+State 118
+
+   15 I_OBJ: OBJ VAR IG ASI_OBJ PC .
+
+    $default  reduce using rule 15 (I_OBJ)
+
+
+State 119
+
+   57 IF: IFT COND DP S1 ELSE . DP S1 DONE
+
+    DP  shift, and go to state 133
+
+
+State 120
+
+   56 IF: IFT COND DP S1 DONE .
+
+    $default  reduce using rule 56 (IF)
+
+
+State 121
+
+   73 IMP2: CADENA MAS IMP2 .
+
+    $default  reduce using rule 73 (IMP2)
+
+
+State 122
+
+   72 IMP2: ASI MAS IMP2 .
+
+    $default  reduce using rule 72 (IMP2)
+
+
+State 123
+
+   69 IMP: IMPT AP IMP2 CP PC .
+
+    $default  reduce using rule 69 (IMP)
+
+
+State 124
+
+   39 ASI_ARR: ENT CO . ASI_ARR
+
+    ID   shift, and go to state 35
+    ENT  shift, and go to state 102
+
+    VAR      go to state 103
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_ARR  go to state 134
+
+
+State 125
+
+   40 ASI_ARR: VAR CO . ASI_ARR
+
+    ID   shift, and go to state 35
+    ENT  shift, and go to state 102
+
+    VAR      go to state 103
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_ARR  go to state 135
+
+
+State 126
+
+   16 I_ARR: TIPO VAR IG ASI_ARR PC .
+
+    $default  reduce using rule 16 (I_ARR)
+
+
+State 127
+
+   68 FOR: ID TO ENT DP S1 DONE .
+
+    $default  reduce using rule 68 (FOR)
+
+
+State 128
+
+   67 FOR: FORT ID TO ID DP S1 . DONE
+
+    DONE  shift, and go to state 136
+
+
+State 129
+
+   27 MOV_HOR: MH AP . ASI_OBJ CO CP PC
+
+    ID  shift, and go to state 35
+    AP  shift, and go to state 91
+
+    VAR      go to state 92
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_OBJ  go to state 137
+
+
+State 130
+
+   34 ASI_POS: AP ASI . CO ASI CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CO     shift, and go to state 138
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 131
+
+   28 T_PAR: TIRO AP . ASI_OBJ CO ASI CP PC
+
+    ID  shift, and go to state 35
+    AP  shift, and go to state 91
+
+    VAR      go to state 92
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI_OBJ  go to state 139
+
+
+State 132
+
+   37 ASI_OBJ: AP ASI_POS CO . ASI CO ASI CO ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 140
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 133
+
+   57 IF: IFT COND DP S1 ELSE DP . S1 DONE
+
+    ID    shift, and go to state 3
+    ENT   shift, and go to state 4
+    FORT  shift, and go to state 5
+    INT   shift, and go to state 6
+    TMP   shift, and go to state 7
+    POS   shift, and go to state 8
+    OBJ   shift, and go to state 9
+    AP    shift, and go to state 10
+    IFT   shift, and go to state 11
+    IMPT  shift, and go to state 12
+
+    $default  reduce using rule 2 (S1)
+
+    S1       go to state 141
+    D_VAR    go to state 14
+    I_NOR    go to state 15
+    I_POS    go to state 16
+    I_OBJ    go to state 17
+    I_ARR    go to state 18
+    TIPO     go to state 19
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 23
+    V_VAR    go to state 24
+    OP       go to state 25
+    E_COND   go to state 26
+    IF       go to state 27
+    FOR      go to state 28
+    IMP      go to state 29
+
+
+State 134
+
+   39 ASI_ARR: ENT CO ASI_ARR .
+
+    $default  reduce using rule 39 (ASI_ARR)
+
+
+State 135
+
+   40 ASI_ARR: VAR CO ASI_ARR .
+
+    $default  reduce using rule 40 (ASI_ARR)
+
+
+State 136
+
+   67 FOR: FORT ID TO ID DP S1 DONE .
+
+    $default  reduce using rule 67 (FOR)
+
+
+State 137
+
+   27 MOV_HOR: MH AP ASI_OBJ . CO CP PC
+
+    CO  shift, and go to state 142
+
+
+State 138
+
+   34 ASI_POS: AP ASI CO . ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 143
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 139
+
+   28 T_PAR: TIRO AP ASI_OBJ . CO ASI CP PC
+
+    CO  shift, and go to state 144
+
+
+State 140
+
+   37 ASI_OBJ: AP ASI_POS CO ASI . CO ASI CO ASI CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CO     shift, and go to state 145
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 141
+
+   57 IF: IFT COND DP S1 ELSE DP S1 . DONE
+
+    DONE  shift, and go to state 146
+
+
+State 142
+
+   27 MOV_HOR: MH AP ASI_OBJ CO . CP PC
+
+    CP  shift, and go to state 147
+
+
+State 143
+
+   34 ASI_POS: AP ASI CO ASI . CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CP     shift, and go to state 148
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 144
+
+   28 T_PAR: TIRO AP ASI_OBJ CO . ASI CP PC
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 149
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 145
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO . ASI CO ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 150
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 146
+
+   57 IF: IFT COND DP S1 ELSE DP S1 DONE .
+
+    $default  reduce using rule 57 (IF)
+
+
+State 147
+
+   27 MOV_HOR: MH AP ASI_OBJ CO CP . PC
+
+    PC  shift, and go to state 151
+
+
+State 148
+
+   34 ASI_POS: AP ASI CO ASI CP .
+
+    $default  reduce using rule 34 (ASI_POS)
+
+
+State 149
+
+   28 T_PAR: TIRO AP ASI_OBJ CO ASI . CP PC
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CP     shift, and go to state 152
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 150
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO ASI . CO ASI CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CO     shift, and go to state 153
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 151
+
+   27 MOV_HOR: MH AP ASI_OBJ CO CP PC .
+
+    $default  reduce using rule 27 (MOV_HOR)
+
+
+State 152
+
+   28 T_PAR: TIRO AP ASI_OBJ CO ASI CP . PC
+
+    PC  shift, and go to state 154
+
+
+State 153
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO ASI CO . ASI CP
+
+    ID   shift, and go to state 40
+    ENT  shift, and go to state 4
+    AP   shift, and go to state 10
+
+    VAR      go to state 20
+    VAR_NOR  go to state 21
+    VAR_ARR  go to state 22
+    ASI      go to state 155
+    V_VAR    go to state 24
+    OP       go to state 42
+
+
+State 154
+
+   28 T_PAR: TIRO AP ASI_OBJ CO ASI CP PC .
+
+    $default  reduce using rule 28 (T_PAR)
+
+
+State 155
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO ASI CO ASI . CP
+   45 OP: ASI . CIR ASI
+   46   | ASI . CIR2
+   47   | ASI . CIR OP
+
+    CP     shift, and go to state 156
+    MAS    shift, and go to state 52
+    MENOS  shift, and go to state 53
+    POR    shift, and go to state 54
+    DIV    shift, and go to state 55
+
+    CIR   go to state 56
+    CIR2  go to state 57
+
+
+State 156
+
+   37 ASI_OBJ: AP ASI_POS CO ASI CO ASI CO ASI CP .
+
+    $default  reduce using rule 37 (ASI_OBJ)
